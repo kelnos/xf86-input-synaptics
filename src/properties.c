@@ -65,6 +65,7 @@ Atom prop_twofinger_width       = 0;
 Atom prop_scrolldist            = 0;
 Atom prop_scrolledge            = 0;
 Atom prop_scrolltwofinger       = 0;
+Atom prop_scroll_reverse        = 0;
 Atom prop_speed                 = 0;
 Atom prop_edgemotion_pressure   = 0;
 Atom prop_edgemotion_speed      = 0;
@@ -208,6 +209,9 @@ InitDeviceProperties(InputInfoPtr pInfo)
     values[0] = para->scroll_twofinger_vert;
     values[1] = para->scroll_twofinger_horiz;
     prop_scrolltwofinger = InitAtom(pInfo->dev, SYNAPTICS_PROP_SCROLL_TWOFINGER,8, 2, values);
+    values[0] = para->scroll_vert_reverse;
+    values[1] = para->scroll_horiz_reverse;
+    prop_scroll_reverse = InitAtom(pInfo->dev, SYNAPTICS_PROP_SCROLL_REVERSE, 8, 2, values);
 
     fvalues[0] = para->min_speed;
     fvalues[1] = para->max_speed;
@@ -447,6 +451,16 @@ SetProperty(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop,
         twofinger = (BOOL*)prop->data;
         para->scroll_twofinger_vert  = twofinger[0];
         para->scroll_twofinger_horiz = twofinger[1];
+    } else if (property == prop_scroll_reverse)
+    {
+        CARD8 *scroll_reverse;
+
+        if (prop->size != 2 || prop->format != 8 || prop->type != XA_INTEGER)
+            return BadMatch;
+
+        scroll_reverse = (BOOL*)prop->data;
+        para->scroll_vert_reverse  = scroll_reverse[0];
+        para->scroll_horiz_reverse = scroll_reverse[1];
     } else if (property == prop_speed)
     {
         float *speed;

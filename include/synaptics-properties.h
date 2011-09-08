@@ -69,6 +69,9 @@
 /* 8 bit (BOOL), 2 values, vertical, horizontal */
 #define SYNAPTICS_PROP_SCROLL_TWOFINGER "Synaptics Two-Finger Scrolling"
 
+/* 8 bit (BOOL), 2 values, vertical, horizontal */
+#define SYNAPTICS_PROP_SCROLL_REVERSE "Synaptics Scroll Reverse"
+
 /* FLOAT, 4 values, min, max, accel, trackstick */
 #define SYNAPTICS_PROP_SPEED "Synaptics Move Speed"
 

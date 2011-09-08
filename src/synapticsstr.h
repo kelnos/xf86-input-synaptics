@@ -124,6 +124,8 @@ typedef struct _SynapticsParameters
     Bool scroll_edge_corner;		    /* Enable/disable continuous edge scrolling when in the corner */
     Bool scroll_twofinger_vert;		    /* Enable/disable vertical two-finger scrolling */
     Bool scroll_twofinger_horiz;	    /* Enable/disable horizontal two-finger scrolling */
+    Bool scroll_vert_reverse;		    /* Enable/disable reverse-direction for vertical scrolling */
+    Bool scroll_horiz_reverse;		    /* Enable/disable reverse-direction for horizontal scrolling */
     double min_speed, max_speed, accl;	    /* movement parameters */
     double trackstick_speed;		    /* trackstick mode speed */
     int edge_motion_min_z;		    /* finger pressure at which minimum edge motion speed is set */

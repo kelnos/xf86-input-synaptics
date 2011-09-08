@@ -535,6 +535,8 @@ static void set_default_parameters(InputInfoPtr pInfo)
     pars->scroll_edge_corner = xf86SetBoolOption(opts, "CornerCoasting", FALSE);
     pars->scroll_twofinger_vert = xf86SetBoolOption(opts, "VertTwoFingerScroll", vertTwoFingerScroll);
     pars->scroll_twofinger_horiz = xf86SetBoolOption(opts, "HorizTwoFingerScroll", horizTwoFingerScroll);
+    pars->scroll_vert_reverse = xf86SetBoolOption(opts, "VertScrollReverse", FALSE);
+    pars->scroll_horiz_reverse = xf86SetBoolOption(opts, "HorizScrollReverse", FALSE);
     pars->edge_motion_min_z = xf86SetIntOption(opts, "EdgeMotionMinZ", edgeMotionMinZ);
     pars->edge_motion_max_z = xf86SetIntOption(opts, "EdgeMotionMaxZ", edgeMotionMaxZ);
     pars->edge_motion_min_speed = xf86SetIntOption(opts, "EdgeMotionMinSpeed", edgeMotionMinSpeed);
@@ -2199,11 +2201,17 @@ HandleScrolling(SynapticsPrivate *priv, struct SynapticsHwState *hw,
 	int delta = para->scroll_dist_vert;
 	if (delta > 0) {
 	    while (hw->y - priv->scroll.last_y > delta) {
-		sd->down++;
+		if (para->scroll_vert_reverse)
+		    sd->up++;
+		else
+		    sd->down++;
 		priv->scroll.last_y += delta;
 	    }
 	    while (hw->y - priv->scroll.last_y < -delta) {
-		sd->up++;
+		if (para->scroll_vert_reverse)
+		    sd->down++;
+		else
+		    sd->up++;
 		priv->scroll.last_y -= delta;
 	    }
 	}
@@ -2213,11 +2221,17 @@ HandleScrolling(SynapticsPrivate *priv, struct SynapticsHwState *hw,
 	int delta = para->scroll_dist_horiz;
 	if (delta > 0) {
 	    while (hw->x - priv->scroll.last_x > delta) {
-		sd->right++;
+		if (para->scroll_horiz_reverse)
+		    sd->left++;
+		else
+		    sd->right++;
 		priv->scroll.last_x += delta;
 	    }
 	    while (hw->x - priv->scroll.last_x < -delta) {
-		sd->left++;
+		if (para->scroll_horiz_reverse)
+		    sd->right++;
+		else
+		    sd->left++;
 		priv->scroll.last_x -= delta;
 	    }
 	}
@@ -2253,11 +2267,17 @@ HandleScrolling(SynapticsPrivate *priv, struct SynapticsHwState *hw,
 	priv->scroll.coast_delta_y += priv->scroll.coast_speed_y * dtime;
 	delay = MIN(delay, POLL_MS);
 	while (priv->scroll.coast_delta_y > 1.0) {
-	    sd->down++;
+	    if (para->scroll_vert_reverse)
+		sd->up++;
+	    else
+		sd->down++;
 	    priv->scroll.coast_delta_y -= 1.0;
 	}
 	while (priv->scroll.coast_delta_y < -1.0) {
-	    sd->up++;
+	    if (para->scroll_vert_reverse)
+		sd->down++;
+	    else
+		sd->up++;
 	    priv->scroll.coast_delta_y += 1.0;
 	}
 	if (abs(priv->scroll.coast_speed_y) < ddy) {
@@ -2274,11 +2294,17 @@ HandleScrolling(SynapticsPrivate *priv, struct SynapticsHwState *hw,
 	priv->scroll.coast_delta_x += priv->scroll.coast_speed_x * dtime;
 	delay = MIN(delay, POLL_MS);
 	while (priv->scroll.coast_delta_x > 1.0) {
-	    sd->right++;
+	    if (para->scroll_horiz_reverse)
+		sd->left++;
+	    else
+		sd->right++;
 	    priv->scroll.coast_delta_x -= 1.0;
 	}
 	while (priv->scroll.coast_delta_x < -1.0) {
-	    sd->left++;
+	    if (para->scroll_horiz_reverse)
+		sd->right++;
+	    else
+		sd->left++;
 	    priv->scroll.coast_delta_x += 1.0;
 	}
 	if (abs(priv->scroll.coast_speed_x) < ddx) {
